@@ -1,0 +1,171 @@
+﻿@model IEnumerable<VitrineProdutos.Core.Data.tb_produto>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h3>Painel Administrativo</h3>
+    @if (!string.IsNullOrEmpty((string)TempData["UsuarioLogado"]))
+    {
+        <button type="button" class="btn btn-primary" id="createNewBtn" style="font-size: 16px;">
+            <span style="font-family: 'Material Icons'; vertical-align: middle;">add_circle</span> Novo Produto
+        </button>
+    }
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Descrição do produto
+            </th>
+            <th>
+                Preço (R$)
+            </th>
+            <th>
+                Comissão (%)
+            </th>
+            <th>
+                Cadastro
+            </th>
+            <th>
+                Link Afiliado
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.descricao)
+                </td>
+                <td>
+                    @string.Format("{0:0.##}", (item.valor / 100.0))
+                </td>
+                <td>
+                    @(((double)item.percentualComissao) / 10)%
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.dataHoraCadastro)
+                </td>
+                <td>
+                    <a href="@item.linkAfiliado" target="_blank">@Html.DisplayFor(modelItem => item.linkAfiliado)</a>
+                </td>
+                <td class="d-flex">
+                    <button style="margin-right: 5px" type="button" class="btn btn-primary mr-2" onclick="openEditModal('@item.id')" title="Edit">
+                        <span style="font-family: 'Material Icons';">edit</span>
+                    </button>
+                    <a style="margin-right: 5px" href="#" class="btn btn-info mr-2" onclick="openDetailsModal('@item.id')" title="Details">
+                        <span style="font-family: 'Material Icons';">info</span>
+                    </a>
+                    <a href="#" class="btn btn-danger" onclick="openDeleteModal('@item.id')" title="Delete">
+                        <span style="font-family: 'Material Icons';">delete</span>
+                    </a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<div id="createModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Novo produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Deletar produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="deleteModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<div id="detailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Detalhes do produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="detailsModalBody"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#createNewBtn').click(function () {
+                var url = '@Url.Action("Create", "Produto")';
+                $.get(url, function (data) {
+                    $('#createModal .modal-body').html(data);
+                    $('#createModal').modal('show');
+                });
+            });
+        });
+
+        function openEditModal(productId) {
+            var url = '@Url.Action("Edit", "Produto")?id=' + productId;
+            $.get(url, function (data) {
+                $('#editModalBody').html(data);
+                $('#editModal').modal('show');
+            });
+        }
+
+        function openDetailsModal(itemId) {
+            var url = '@Url.Action("Details", "Produto")' + '?id=' + itemId;
+
+            $.get(url, function (data) {
+                $('#detailsModalBody').html(data);
+                $('#detailsModal').modal('show');
+            });
+        }
+
+        function openDeleteModal(itemId) {
+            var url = '@Url.Action("Delete", "Produto")' + '?id=' + itemId;
+
+            $.get(url, function (data) {
+                $('#deleteModalBody').html(data);
+                $('#deleteModal').modal('show');
+            });
+        }
+    </script>
+}

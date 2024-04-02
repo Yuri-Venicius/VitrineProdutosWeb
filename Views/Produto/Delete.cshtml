@@ -1,0 +1,47 @@
+﻿@model VitrineProdutos.Core.Data.tb_produto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deletar</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h4>Tem certeza que deseja deletar este produto?</h4>
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    Id do produto
+                </dt>
+
+                <dt>
+                    @Html.DisplayFor(model => model.id)
+                </dt>
+                <dt>
+                    Nome do produto
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.nome)
+                </dd>
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="submit" value="Delete" class="btn btn-danger" /> |
+                    @Html.ActionLink("Voltar ao início", "Index")
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>

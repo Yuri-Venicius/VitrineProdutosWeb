@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Vitrine de produto</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Vitríne de produtos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+            </div>
+            @if (Session["UsuarioLogado"] != null && (bool)Session["UsuarioLogado"])
+            {
+                <div class="d-flex align-items-center">
+                    <div>
+                        <p class="text-light me-3">Olá, @(Session["NomeUsuario"] as string)</p>
+                    </div>
+                    <div>
+                        <a class="btn btn-outline-light" href="/produto">Painel Admin</a>
+                    </div>
+                    <div>
+                        <a class="btn btn-danger" href="/Usuario/Logout">Sair</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</button>
+                </div>
+            }
+        </div>
+    </nav>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Efetue seu login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="usuario" class="col-form-label">Usuário:</label>
+                            <input type="text" class="form-control" id="usuario">
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha" class="col-form-label">Senha:</label>
+                            <input type="password" class="form-control" id="senha">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">Efetuar login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Vitrine de Produtos - YVMO.</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        function login() {
+            var usuario = document.getElementById("usuario").value;
+            var senha = document.getElementById("senha").value;
+
+            if (usuario.trim() === '' || senha.trim() === '') {
+                alert("Por favor, insira o nome de usuário e a senha.");
+                return;
+            }
+
+            $.post("@Url.Action("Login", "Usuario")", { usuario: usuario, senha: senha })
+                .done(function (data) {
+                    if (data.success) {
+                        window.location.href = "/produto";
+                    } else {
+                        alert("Usuário ou senha inválidos.");
+                    }
+                })
+                .fail(function (data) {
+                    alert("Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde");
+                });
+        }
+    </script>
+</body>
+</html>

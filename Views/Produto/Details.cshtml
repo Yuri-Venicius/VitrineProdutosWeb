@@ -1,0 +1,51 @@
+﻿@model VitrineProdutos.Core.Data.tb_produto
+
+@{
+    Layout = null;
+}
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            Nome do produto
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nome)
+        </dd>
+
+        <dt>
+            Descrição do produto
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descricao)
+        </dd>
+
+        <dt>
+            Valor de venda
+        </dt>
+        <dd>
+            R$ @string.Format("{0:0.##}", (Model.valor / 100.0))
+        </dd>
+
+        <dt>
+            Comissão da venda (%)
+        </dt>
+        <dd>
+            @(((double)Model.percentualComissao) / 10)%
+        </dd>
+
+        <dt>
+            Cadastro
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.dataHoraCadastro)
+        </dd>
+
+        <dt>
+            Link de afiliado
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.linkAfiliado)
+        </dd>
+    </dl>
+</div>
